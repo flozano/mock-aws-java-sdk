@@ -7,6 +7,7 @@ import com.amazonaws.util.*;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 
 /**
@@ -51,8 +52,8 @@ public class AmazonSQSMock implements AmazonSQS {
     public static final String RECEIPT_ID_PREFIX = "mock-aws-receipt-id-";
 
     private AtomicLong incrementer = new AtomicLong(System.currentTimeMillis() * 1000);
-    private Map<String, List<Message>> allQueues = new HashMap<String, List<Message>>();
-    private Map<String, Map<String, Message>> retrievedMessages = new HashMap<String, Map<String,Message>>();
+    private Map<String, List<Message>> allQueues = new ConcurrentHashMap<String, List<Message>>();
+    private Map<String, Map<String, Message>> retrievedMessages = new ConcurrentHashMap<String, Map<String,Message>>();
 
     //@Override
     public GetQueueUrlResult getQueueUrl(final GetQueueUrlRequest request) throws AmazonServiceException, AmazonClientException {
@@ -78,7 +79,7 @@ public class AmazonSQSMock implements AmazonSQS {
         // (Also note: we are ignoring the documented exception: QueueDeletedRecentlyException)
         if (!allQueues.containsKey(queueUrl)) {
             allQueues.put(queueUrl, Collections.synchronizedList(new ArrayList<Message>()));
-            retrievedMessages.put(queueUrl, new HashMap<String, Message>());
+            retrievedMessages.put(queueUrl, new ConcurrentHashMap<String, Message>());
         }
         return new CreateQueueResult().withQueueUrl(queueUrl);
     }
@@ -193,7 +194,7 @@ public class AmazonSQSMock implements AmazonSQS {
             if (!attbs.contains(attb)) { throw new InvalidAttributeNameException("Invalid Attribute Name: " + attb); }
         }
 
-        final Map<String, String> results = new HashMap<String, String>();
+        final Map<String, String> results = new ConcurrentHashMap<String, String>();
         final boolean hasAll = request.getAttributeNames().contains(ALL);
         if (hasAll || request.getAttributeNames().contains(NUM_MSGS)) {
             results.put(NUM_MSGS, allQueues.get(queueUrl) == null ? "0" : allQueues.get(queueUrl).size()+"");
