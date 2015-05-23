@@ -1,14 +1,55 @@
 package org.flite.mock.amazonaws.sqs;
 
-import com.amazonaws.*;
-import com.amazonaws.services.sqs.*;
-import com.amazonaws.services.sqs.model.*;
-import com.amazonaws.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.commons.lang.StringUtils;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.AmazonWebServiceRequest;
+import com.amazonaws.ResponseMetadata;
+import com.amazonaws.regions.Region;
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.model.AddPermissionRequest;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequest;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchRequestEntry;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityBatchResult;
+import com.amazonaws.services.sqs.model.ChangeMessageVisibilityRequest;
+import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.CreateQueueResult;
+import com.amazonaws.services.sqs.model.DeleteMessageBatchRequest;
+import com.amazonaws.services.sqs.model.DeleteMessageBatchRequestEntry;
+import com.amazonaws.services.sqs.model.DeleteMessageBatchResult;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
+import com.amazonaws.services.sqs.model.DeleteQueueRequest;
+import com.amazonaws.services.sqs.model.GetQueueAttributesRequest;
+import com.amazonaws.services.sqs.model.GetQueueAttributesResult;
+import com.amazonaws.services.sqs.model.GetQueueUrlRequest;
+import com.amazonaws.services.sqs.model.GetQueueUrlResult;
+import com.amazonaws.services.sqs.model.InvalidAttributeNameException;
+import com.amazonaws.services.sqs.model.ListDeadLetterSourceQueuesRequest;
+import com.amazonaws.services.sqs.model.ListDeadLetterSourceQueuesResult;
+import com.amazonaws.services.sqs.model.ListQueuesRequest;
+import com.amazonaws.services.sqs.model.ListQueuesResult;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.PurgeQueueRequest;
+import com.amazonaws.services.sqs.model.ReceiptHandleIsInvalidException;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
+import com.amazonaws.services.sqs.model.ReceiveMessageResult;
+import com.amazonaws.services.sqs.model.RemovePermissionRequest;
+import com.amazonaws.services.sqs.model.SendMessageBatchRequest;
+import com.amazonaws.services.sqs.model.SendMessageBatchRequestEntry;
+import com.amazonaws.services.sqs.model.SendMessageBatchResult;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SendMessageResult;
+import com.amazonaws.services.sqs.model.SetQueueAttributesRequest;
+import com.amazonaws.util.Md5Utils;
 
 /**
  * Copyright (c) 2012 Flite, Inc
@@ -94,6 +135,7 @@ public class AmazonSQSMock implements AmazonSQS {
         if (!allQueues.containsKey(queueUrl)) { throw new AmazonServiceException("Queue Not Found: " + queueUrl); }
         final Long seq = incrementer.getAndIncrement();
         final Message msg = new Message()
+                .withMessageAttributes(request.getMessageAttributes())
                 .withBody(StringUtils.defaultString(request.getMessageBody()))
                 .withMD5OfBody(makeMD5(request.getMessageBody()))
                 .withMessageId(MESSAGE_ID_PREFIX + seq);
@@ -286,4 +328,119 @@ public class AmazonSQSMock implements AmazonSQS {
             throw new RuntimeException(ex);
         }
     }
+
+    public void setRegion(Region region) throws IllegalArgumentException {
+    }
+
+    public void purgeQueue(PurgeQueueRequest purgeQueueRequest)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public ListDeadLetterSourceQueuesResult listDeadLetterSourceQueues(
+            ListDeadLetterSourceQueuesRequest listDeadLetterSourceQueuesRequest)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public void setQueueAttributes(String queueUrl,
+            Map<String, String> attributes) throws AmazonServiceException,
+            AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public ChangeMessageVisibilityBatchResult changeMessageVisibilityBatch(
+            String queueUrl,
+            List<ChangeMessageVisibilityBatchRequestEntry> entries)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public void changeMessageVisibility(String queueUrl, String receiptHandle,
+            Integer visibilityTimeout) throws AmazonServiceException,
+            AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public GetQueueUrlResult getQueueUrl(String queueName)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public void removePermission(String queueUrl, String label)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public GetQueueAttributesResult getQueueAttributes(String queueUrl,
+            List<String> attributeNames) throws AmazonServiceException,
+            AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public SendMessageBatchResult sendMessageBatch(String queueUrl,
+            List<SendMessageBatchRequestEntry> entries)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public void deleteQueue(String queueUrl) throws AmazonServiceException,
+            AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public SendMessageResult sendMessage(String queueUrl, String messageBody)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public ReceiveMessageResult receiveMessage(String queueUrl)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public ListQueuesResult listQueues(String queueNamePrefix)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public DeleteMessageBatchResult deleteMessageBatch(String queueUrl,
+            List<DeleteMessageBatchRequestEntry> entries)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public CreateQueueResult createQueue(String queueName)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+
+    }
+
+    public void addPermission(String queueUrl, String label,
+            List<String> aWSAccountIds, List<String> actions)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+        
+    }
+
+    public void deleteMessage(String queueUrl, String receiptHandle)
+            throws AmazonServiceException, AmazonClientException {
+        throw new RuntimeException(NYI_EXCEPTION);
+        
+    }
+
 }
