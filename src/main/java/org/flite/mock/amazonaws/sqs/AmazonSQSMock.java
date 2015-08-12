@@ -50,6 +50,7 @@ public class AmazonSQSMock implements AmazonSQS {
     public static final String QUEUE_URL_SERVICE_EXCEPTION = QUEUE_URL_PREFIX + MARKER_SERVICE_EXCEPTION;
     public static final String MESSAGE_ID_PREFIX = "mock-aws-message-id-";
     public static final String RECEIPT_ID_PREFIX = "mock-aws-receipt-id-";
+    public static final String ARN_PREFIX = "arn:aws:";
 
     private AtomicLong incrementer = new AtomicLong(System.currentTimeMillis() * 1000);
     private Map<String, List<Message>> allQueues = new ConcurrentHashMap<String, List<Message>>();
@@ -182,8 +183,10 @@ public class AmazonSQSMock implements AmazonSQS {
     public static final String ARN = "QueueArn";
     public static final String MSGS_DELAYED = "ApproximateNumberOfMessagesDelayed";
     public static final String DELAY_SEC = "DelaySeconds";
+    public static final String REDRIVE_POLICY = "RedrivePolicy";
+
     private static final List<String> attbs = Arrays.asList(ALL, NUM_MSGS, NUM_NOT_VISIBLE, VIS_TIMEOUT, CREATED_TIMESTAMP,
-            MODIFIED_TIMESTAMP, POLICY, MAX_SIZE, RETENTION, ARN, MSGS_DELAYED, DELAY_SEC);
+            MODIFIED_TIMESTAMP, POLICY, MAX_SIZE, RETENTION, ARN, MSGS_DELAYED, DELAY_SEC, REDRIVE_POLICY);
     //@Override
     public GetQueueAttributesResult getQueueAttributes(final GetQueueAttributesRequest request) throws AmazonServiceException, AmazonClientException {
         if (request == null) { throw new AmazonClientException("Null GetQueueAttributesRequest"); }
@@ -202,27 +205,43 @@ public class AmazonSQSMock implements AmazonSQS {
         if (hasAll || request.getAttributeNames().contains(NUM_NOT_VISIBLE)) {
             results.put(NUM_NOT_VISIBLE, retrievedMessages.get(queueUrl) == null ? "0" : retrievedMessages.get(queueUrl).size()+"");
         }
+        if (hasAll || request.getAttributeNames().contains(ARN)) {
+            results.put(ARN, ARN_PREFIX + queueUrl);
+        }
         if (hasAll || request.getAttributeNames().contains(VIS_TIMEOUT)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(CREATED_TIMESTAMP)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(MODIFIED_TIMESTAMP)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(POLICY)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(MAX_SIZE)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(RETENTION)) { throw new RuntimeException(NYI_EXCEPTION); }
-        if (hasAll || request.getAttributeNames().contains(ARN)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(MSGS_DELAYED)) { throw new RuntimeException(NYI_EXCEPTION); }
         if (hasAll || request.getAttributeNames().contains(DELAY_SEC)) { throw new RuntimeException(NYI_EXCEPTION); }
 
         return new GetQueueAttributesResult().withAttributes(results);
     }
 
+    //@Override
+    public void setQueueAttributes(SetQueueAttributesRequest setQueueAttributesRequest) throws AmazonServiceException, AmazonClientException {
+        if (setQueueAttributesRequest == null){ throw new AmazonClientException("Null SetQueueAttributesRequest");}
+        final String queueUrl = setQueueAttributesRequest.getQueueUrl();
+        checkURLForException(queueUrl);
+        Map<String, String> attributesMap = setQueueAttributesRequest.getAttributes();
+        for (final String attb : setQueueAttributesRequest.getAttributes().keySet()) {
+            checkStringForExceptionMarker(attb);
+            if (!attbs.contains(attb)) { throw new InvalidAttributeNameException("Invalid Attribute Name: " + attb); }
+        }
+
+        if (attributesMap.containsKey(CREATED_TIMESTAMP)) { throw new RuntimeException(NYI_EXCEPTION); }
+        if (attributesMap.containsKey(MODIFIED_TIMESTAMP)) { throw new RuntimeException(NYI_EXCEPTION); }
+        if (attributesMap.containsKey(POLICY)) { throw new RuntimeException(NYI_EXCEPTION); }
+        if (attributesMap.containsKey(MAX_SIZE)) { throw new RuntimeException(NYI_EXCEPTION); }
+        if (attributesMap.containsKey(MSGS_DELAYED)) { throw new RuntimeException(NYI_EXCEPTION); }
+        if (attributesMap.containsKey(DELAY_SEC)) { throw new RuntimeException(NYI_EXCEPTION); }
+    }
+
 
     //@Override
     public void setEndpoint(String endpoint) throws IllegalArgumentException { throw new RuntimeException(NYI_EXCEPTION); }
-
-    //@Override
-    public void setQueueAttributes(SetQueueAttributesRequest setQueueAttributesRequest) throws AmazonServiceException, AmazonClientException {
-        throw new RuntimeException(NYI_EXCEPTION);
-    }
 
     //@Override
     public ChangeMessageVisibilityBatchResult changeMessageVisibilityBatch(ChangeMessageVisibilityBatchRequest changeMessageVisibilityBatchRequest) throws AmazonServiceException, AmazonClientException {
