@@ -453,13 +453,13 @@ public class AmazonSQSMock implements AmazonSQS {
             List<String> aWSAccountIds, List<String> actions)
             throws AmazonServiceException, AmazonClientException {
         throw new RuntimeException(NYI_EXCEPTION);
-        
+
     }
 
     public void deleteMessage(String queueUrl, String receiptHandle)
             throws AmazonServiceException, AmazonClientException {
         throw new RuntimeException(NYI_EXCEPTION);
-        
+
     }
 
 }

@@ -5,7 +5,7 @@
   <groupId>com.flozano.org.flite.mock</groupId>
   <artifactId>mock-aws-java-sdk</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.1.1</version>
+  <version>0.1.1.2</version>
 
   <name>mock-aws-java-sdk</name>
   <url>http://github.com/flozano/mock-aws-java-sdk</url>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-sqs</artifactId>
-      <version>1.9.37</version>
+      <version>1.10.26</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
